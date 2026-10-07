@@ -1,0 +1,1132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232443D4'/%3E%3Cpath d='M9 22L16 10L23 22' stroke='white' stroke-width='2' fill='none'/%3E%3Ccircle cx='9' cy='22' r='3.2' fill='white'/%3E%3Ccircle cx='16' cy='10' r='3.2' fill='white'/%3E%3Ccircle cx='23' cy='22' r='3.2' fill='white'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arwindhcn.github.io/">
+<meta property="og:title" content="Arwindh C N">
+<meta property="og:description" content="Arwindh C N, machine learning engineer. Graph neural networks, entity resolution at 10M-record scale, biomedical knowledge graphs.">
+<meta name="twitter:card" content="summary">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Arwindh C N</title>
+<meta name="description" content="Arwindh C N, machine learning engineer. Graph neural networks, entity resolution at 10M-record scale, biomedical knowledge graphs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..650;1,8..60,400..650&display=swap">
+<style>
+/* Layout: left-aligned editorial column (max 1180px). Hero splits thesis (left) from a live heterogeneous graph (right);
+   case studies are bands with a sticky 4/12 fact column beside an 8/12 evidence column. Node-type colors double as the palette. */
+:root{
+  --paper:#F2F4F3; --sheet:#FBFCFC; --ink:#121B20; --ink-2:#4D5B63; --rule:#D4DBDD; --rule-2:#E5EAEB;
+  --accent:#2443D4; --accent-ink:#FFFFFF; --ok:#1E7F4F; --warn:#B4610B;
+  --n-patient:#D4504B; --n-gene:#0C8C7E; --n-protein:#B07C08; --n-drug:#2443D4; --n-disease:#8744C4; --n-pathway:#5E7180;
+  --sev-high:#C93C37; --sev-med:#D9792A; --sev-low:#C9A227;
+  --term-bg:#0F171B; --term-fg:#D6E0E0; --term-dim:#6F8288;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1316; --sheet:#141C20; --ink:#E5EBEC; --ink-2:#9BAAB0; --rule:#27333A; --rule-2:#1C262B;
+    --accent:#8EA2FF; --accent-ink:#0D1316; --ok:#4CC38A; --warn:#F0A44B;
+    --n-patient:#FF7D74; --n-gene:#3FCDB6; --n-protein:#F0B94A; --n-drug:#8EA2FF; --n-disease:#BE8FF2; --n-pathway:#94A6B4;
+    --sev-high:#FF6B62; --sev-med:#F59E4C; --sev-low:#E8C55A;
+    --term-bg:#070B0D; --term-fg:#D6E0E0; --term-dim:#6F8288;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1316; --sheet:#141C20; --ink:#E5EBEC; --ink-2:#9BAAB0; --rule:#27333A; --rule-2:#1C262B;
+  --accent:#8EA2FF; --accent-ink:#0D1316; --ok:#4CC38A; --warn:#F0A44B;
+  --n-patient:#FF7D74; --n-gene:#3FCDB6; --n-protein:#F0B94A; --n-drug:#8EA2FF; --n-disease:#BE8FF2; --n-pathway:#94A6B4;
+  --sev-high:#FF6B62; --sev-med:#F59E4C; --sev-low:#E8C55A;
+  --term-bg:#070B0D; --term-fg:#D6E0E0; --term-dim:#6F8288;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(16px,4vw,40px)}
+.mono{font-family:var(--mono)}
+.label{font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--paper) 86%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px}
+.brand{font-family:var(--display);font-stretch:125%;font-weight:800;font-size:15px;letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
+.nav ul{display:flex;gap:clamp(14px,2.4vw,26px);list-style:none;margin:0;padding:0;font-family:var(--display);font-size:14px;font-weight:500}
+.nav a{text-decoration:none;color:var(--ink-2)}
+.nav a:hover{color:var(--ink)}
+.nav .hire{color:var(--accent);font-weight:650}
+@media (max-width:620px){.nav li.opt{display:none}}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.04fr);gap:clamp(28px,4.5vw,64px);align-items:center;padding-block:clamp(40px,6.5vw,84px) clamp(32px,4vw,52px)}
+@media (max-width:920px){.hero{grid-template-columns:minmax(0,1fr)}}
+.hero-text{min-width:0;display:flex;flex-direction:column;gap:22px}
+.hero h1{font-family:var(--display);font-stretch:125%;font-weight:850;font-size:clamp(3.1rem,8vw,6.4rem);line-height:.9;letter-spacing:-.04em;margin:0}
+.hero h1 span{display:block}
+.hero h1 .initials{color:var(--accent)}
+.lede{font-size:clamp(1.08rem,1.6vw,1.25rem);line-height:1.55;margin:0;max-width:34em}
+.status{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0;padding:0;list-style:none;font-family:var(--display);font-size:14px;color:var(--ink-2)}
+.status li{display:flex;align-items:center;gap:8px}
+.status .open{color:var(--ink);font-weight:600}
+.status .open::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 22%,transparent)}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-weight:650;font-size:15px;line-height:1;padding:12px 16px;border-radius:8px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);text-decoration:none;cursor:pointer;transition:transform .15s ease,background .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn svg{width:16px;height:16px;flex:none}
+@media (prefers-reduced-motion: reduce){.btn{transition:none}.btn:hover{transform:none}}
+
+/* graph panel */
+.kg{position:relative;min-width:0;margin:0;background:var(--sheet);border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.kg canvas{display:block;width:100%;height:clamp(330px,40vw,470px);touch-action:pan-y;cursor:default}
+.kg figcaption{display:flex;flex-direction:column;gap:10px;padding:14px 16px 16px;border-top:1px solid var(--rule)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0;padding:0;list-style:none;font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+.legend li{display:flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c)}
+.legend i.sq{border-radius:1px;width:7px;height:7px}
+.legend i.dia{border-radius:1px;width:7px;height:7px;transform:rotate(45deg)}
+.legend i.ring{background:transparent;border:2.5px solid var(--c)}
+.kg-note{margin:0;font-size:14px;line-height:1.5;color:var(--ink-2)}
+.kg-tip{position:absolute;z-index:3;pointer-events:none;max-width:240px;padding:8px 10px;border-radius:8px;background:var(--ink);color:var(--paper);font-family:var(--display);font-size:13px;line-height:1.35;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.kg-tip b{display:block;font-weight:700}
+.kg-tip span{font-family:var(--mono);font-size:11px;opacity:.8}
+
+/* metrics */
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--rule)}
+.metric{min-width:0;display:flex;flex-direction:column;gap:8px;padding-block:24px;padding-right:24px}
+.metric + .metric{border-left:1px solid var(--rule);padding-left:24px}
+.metric .num{font-family:var(--display);font-stretch:115%;font-weight:800;font-size:clamp(2.1rem,4vw,2.9rem);line-height:1;letter-spacing:-.025em;font-variant-numeric:tabular-nums;margin:0}
+.metric .num small{font-size:.42em;font-weight:600;letter-spacing:0;color:var(--ink-2);margin-left:8px}
+.metric p{margin:0;font-size:15.5px;line-height:1.45}
+@media (max-width:780px){.metrics{grid-template-columns:minmax(0,1fr)}.metric{padding-right:0}.metric + .metric{border-left:0;border-top:1px solid var(--rule);padding-left:0}}
+
+/* sections */
+section.block{padding-block:clamp(56px,8vw,104px) 0}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 20px;padding-top:16px;border-top:2px solid var(--ink);margin-bottom:clamp(8px,2vw,16px)}
+.sec-head h2{font-family:var(--display);font-stretch:118%;font-weight:780;font-size:clamp(1.7rem,3.4vw,2.5rem);line-height:1.05;letter-spacing:-.025em;margin:0}
+
+/* case studies */
+.case{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(24px,4.5vw,64px);padding-block:clamp(36px,5vw,60px);border-top:1px solid var(--rule)}
+.sec-head + .case{border-top:0}
+@media (max-width:920px){.case{grid-template-columns:minmax(0,1fr)}}
+.case-meta{min-width:0;align-self:start;position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);display:flex;flex-direction:column;gap:18px}
+@media (max-width:920px){.case-meta{position:static}}
+.kicker{margin:0;color:var(--accent)}
+.case h3{font-family:var(--display);font-stretch:108%;font-weight:720;font-size:clamp(1.45rem,2.4vw,1.85rem);line-height:1.12;letter-spacing:-.018em;margin:0;text-wrap:balance}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;margin:0}
+.facts dt{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);padding-top:3px;white-space:nowrap}
+.facts dd{margin:0;font-family:var(--display);font-size:14.5px;line-height:1.4}
+.chips{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:0}
+.chips li{font-family:var(--mono);font-size:11.5px;line-height:1;padding:6px 8px;border:1px solid var(--rule);border-radius:999px;color:var(--ink-2);background:var(--sheet)}
+.link-out{align-self:flex-start;font-family:var(--display);font-weight:650;font-size:15px;color:var(--accent);text-decoration:none;border-bottom:1.5px solid currentColor;padding-bottom:1px}
+.link-out:hover{border-bottom-width:2.5px}
+
+.case-body{min-width:0;display:flex;flex-direction:column;gap:26px}
+.case-body p{margin:0;max-width:68ch}
+.case-body h4{font-family:var(--display);font-stretch:105%;font-weight:700;font-size:17px;margin:0;letter-spacing:-.005em}
+.fig{min-width:0;margin:0;background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px}
+.fig-head{display:flex;flex-direction:column;gap:3px}
+.fig-title{font-family:var(--display);font-weight:680;font-size:15px;margin:0}
+.fig-sub{font-family:var(--mono);font-size:11.5px;line-height:1.5;color:var(--ink-2);margin:0}
+.fig-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:640px){.fig-row{grid-template-columns:minmax(0,1fr)}}
+
+.chart{position:relative}
+.chart svg{display:block}
+.chart text{font-family:var(--mono);font-size:10.5px;fill:var(--ink-2)}
+.chart .yt{text-anchor:end}
+.chart .xt{text-anchor:middle}
+.chart .gl{stroke:var(--rule-2);stroke-width:1}
+.chart .ln{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.chart .dash{stroke:var(--ink-2);stroke-width:1.5;stroke-dasharray:3 4}
+.chart .pt{fill:var(--sheet);stroke:var(--accent);stroke-width:2}
+.chart .pt.fin{fill:var(--accent)}
+.chart .pt.unf{stroke:var(--ink-2);stroke-dasharray:2 2}
+.chart .pt.on{stroke-width:3}
+.chart .fl{font-family:var(--display);font-weight:750;font-size:13px;fill:var(--ink)}
+.chart .xh{stroke:var(--ink-2);stroke-dasharray:2 3}
+.chart .hit{fill:transparent;cursor:crosshair}
+.chart-tip{position:absolute;z-index:2;pointer-events:none;width:max-content;max-width:230px;padding:8px 10px;border-radius:8px;background:var(--ink);color:var(--paper);font-family:var(--display);font-size:12.5px;line-height:1.4;transform:translate(-50%,calc(-100% - 12px))}
+.chart-tip b{font-weight:700}
+.chart-tip span{display:block;font-family:var(--mono);font-size:11px;opacity:.82;margin-top:2px}
+
+.bars{display:flex;flex-direction:column;gap:12px}
+.bar-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center}
+.bar-lbl{font-family:var(--display);font-size:13.5px;line-height:1.3}
+.bar-val{font-family:var(--mono);font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.bar-track{grid-column:1 / -1;position:relative;height:12px;background:var(--rule-2);border-radius:3px}
+.bar{position:absolute;inset:0 auto 0 0;width:var(--w);background:var(--c,var(--accent));border-radius:3px}
+.bar.muted{--c:var(--ink-2);opacity:.55}
+.limit{position:absolute;top:-5px;bottom:-5px;left:var(--at);width:0;border-left:1.5px dashed var(--sev-high)}
+.limit-lbl{font-family:var(--mono);font-size:10.5px;color:var(--sev-high);text-align:right}
+
+.moves{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;max-width:70ch}
+.moves li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:12px;font-size:16px;line-height:1.55}
+.moves li::before{content:"";width:8px;height:8px;margin-top:.62em;background:var(--accent);transform:rotate(45deg)}
+.moves b{font-family:var(--display);font-weight:680;font-size:15.5px}
+.num-inline{font-family:var(--mono);font-size:.88em;font-weight:500;white-space:nowrap}
+
+.aside{font-size:15px;line-height:1.55;color:var(--ink-2);border-left:2px solid var(--rule);padding-left:14px;max-width:68ch;margin:0}
+
+details.data{border:1px solid var(--rule);border-radius:10px;background:var(--sheet)}
+details.data summary{cursor:pointer;padding:12px 16px;font-family:var(--display);font-weight:600;font-size:14.5px;list-style-position:inside}
+details.data .tbl{overflow-x:auto;border-top:1px solid var(--rule)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+th{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+td{font-family:var(--display)}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.final td{font-weight:700}
+tbody tr:last-child td{border-bottom:0}
+
+/* GNN pipeline strip */
+.pipe{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:0;padding:0;list-style:none}
+.pipe li{flex:1 1 130px;min-width:0;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:1px solid var(--rule);border-radius:8px;background:var(--paper)}
+.pipe li b{font-family:var(--display);font-weight:680;font-size:13.5px;line-height:1.25}
+.pipe li span{font-family:var(--mono);font-size:11px;color:var(--ink-2);line-height:1.4}
+
+.audit{display:flex;flex-direction:column;border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--sheet)}
+.audit-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.audit-row + .audit-row{border-top:1px solid var(--rule)}
+.audit-row > div{min-width:0;padding:14px 16px;font-size:15px;line-height:1.5;display:flex;flex-direction:column;gap:5px}
+.audit-row > div + div{border-left:1px solid var(--rule)}
+.audit .tag{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.audit .found .tag{color:var(--warn)}
+.audit .fixed .tag{color:var(--ok)}
+@media (max-width:640px){.audit-row{grid-template-columns:minmax(0,1fr)}.audit-row > div + div{border-left:0;border-top:1px dashed var(--rule)}}
+
+/* knowledge graph spec */
+.spec{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-block:1px solid var(--rule)}
+.spec div{min-width:0;padding:14px 14px 14px 0;display:flex;flex-direction:column;gap:3px}
+.spec div + div{border-left:1px solid var(--rule);padding-left:14px}
+.spec b{font-family:var(--display);font-stretch:112%;font-weight:780;font-size:clamp(1.3rem,2.4vw,1.7rem);line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.015em}
+.spec span{font-family:var(--mono);font-size:11px;color:var(--ink-2)}
+@media (max-width:640px){.spec{grid-template-columns:repeat(2,minmax(0,1fr))}.spec div:nth-child(3){border-left:0;padding-left:0}.spec div:nth-child(n+3){border-top:1px solid var(--rule)}}
+.schema-scroll{overflow-x:auto;margin-inline:-4px}
+.schema-scroll svg{display:block;width:100%;min-width:620px;height:auto}
+#schema .edge{fill:none;stroke:var(--ink-2);stroke-width:1.3}
+#schema .elbl{font-family:var(--mono);font-size:10px;fill:var(--ink-2);text-anchor:middle;paint-order:stroke;stroke:var(--sheet);stroke-width:5px;stroke-linejoin:round}
+#schema .nname{font-family:var(--display);font-weight:700;font-size:13.5px;fill:var(--ink);text-anchor:middle}
+#schema .ncount{font-family:var(--mono);font-size:10.5px;fill:var(--ink-2);text-anchor:middle}
+.risks{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.risks li{min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;align-items:baseline;padding:10px 12px;border:1px solid var(--rule);border-radius:8px;background:var(--sheet)}
+.risks li::before{content:"";grid-row:1 / span 2;width:4px;align-self:stretch;border-radius:2px;background:var(--sev)}
+.risks li[data-sev="high"]{--sev:var(--sev-high)}
+.risks li[data-sev="med"]{--sev:var(--sev-med)}
+.risks li[data-sev="low"]{--sev:var(--sev-low)}
+.risks b{font-family:var(--display);font-weight:680;font-size:14.5px}
+.risks span{font-size:14px;color:var(--ink-2);line-height:1.4}
+@media (max-width:560px){.risks{grid-template-columns:minmax(0,1fr)}}
+
+/* more projects */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding-top:clamp(20px,3vw,32px)}
+.card{min-width:0;display:flex;flex-direction:column;gap:12px;padding:20px;border:1px solid var(--rule);border-radius:12px;background:var(--sheet)}
+.card.wide{grid-column:span 2}
+.card h3{font-family:var(--display);font-stretch:108%;font-weight:720;font-size:19px;letter-spacing:-.01em;margin:0}
+.card p{margin:0;font-size:15.5px;line-height:1.55}
+.card .foot{margin-top:auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.card .label{color:var(--accent)}
+@media (max-width:920px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card.wide{grid-column:1 / -1}}
+@media (max-width:600px){.grid{grid-template-columns:minmax(0,1fr)}}
+.wide-inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;align-items:center}
+@media (max-width:760px){.wide-inner{grid-template-columns:minmax(0,1fr)}}
+.term{min-width:0;margin:0;border-radius:10px;background:var(--term-bg);color:var(--term-fg);font-family:var(--mono);font-size:13px;line-height:1.6;padding:12px 14px 16px;overflow-x:auto}
+.term .bar3{display:flex;gap:6px;margin-bottom:10px}
+.term .bar3 i{width:9px;height:9px;border-radius:50%;background:var(--term-dim);opacity:.6}
+.term .line{white-space:pre}
+.term .pr{color:#7FD6A8}
+.term .ghost{color:var(--term-dim)}
+.term .caret{display:inline-block;width:7px;height:1.05em;vertical-align:-2px;background:var(--term-fg);margin-left:1px;animation:blink 1.1s steps(1) infinite}
+.term .hint{color:var(--term-dim);font-size:11.5px;margin-top:8px}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.term .caret{animation:none}}
+
+/* experience */
+.timeline{list-style:none;margin:0;padding:clamp(16px,3vw,28px) 0 0;display:flex;flex-direction:column}
+.timeline > li{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:clamp(12px,3vw,40px);padding-block:22px;border-bottom:1px solid var(--rule)}
+.timeline > li:last-child{border-bottom:0}
+.timeline time{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);padding-top:4px;font-variant-numeric:tabular-nums}
+.timeline .role{display:flex;flex-direction:column;gap:6px}
+.timeline h3{font-family:var(--display);font-stretch:105%;font-weight:700;font-size:18.5px;line-height:1.25;margin:0}
+.timeline .org{font-family:var(--display);font-size:14.5px;color:var(--ink-2);margin:0}
+.timeline p{margin:0;max-width:68ch;font-size:16px}
+@media (max-width:640px){.timeline > li{grid-template-columns:minmax(0,1fr);gap:6px}}
+
+/* skills + education */
+.two{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,56px);padding-top:clamp(16px,3vw,28px)}
+@media (max-width:920px){.two{grid-template-columns:minmax(0,1fr)}}
+.skills{display:flex;flex-direction:column}
+.skill{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:6px 20px;padding-block:14px;border-bottom:1px solid var(--rule)}
+.skill:first-child{padding-top:0}
+.skill:last-child{border-bottom:0}
+.skill h3{font-family:var(--display);font-weight:700;font-size:15px;margin:0;line-height:1.35}
+.skill .tools{font-family:var(--mono);font-size:13px;line-height:1.55;margin:0;color:var(--ink)}
+.skill .used{font-size:14.5px;color:var(--ink-2);margin:4px 0 0;line-height:1.45}
+@media (max-width:560px){.skill{grid-template-columns:minmax(0,1fr)}}
+.edu{display:flex;flex-direction:column;gap:14px;padding:20px;border:1px solid var(--rule);border-radius:12px;background:var(--sheet);align-self:start}
+.edu h3{font-family:var(--display);font-stretch:108%;font-weight:720;font-size:19px;margin:0;line-height:1.25}
+.edu p{margin:0;font-size:15.5px}
+.edu .gpa{display:flex;align-items:baseline;gap:8px}
+.edu .gpa b{font-family:var(--display);font-stretch:115%;font-weight:800;font-size:34px;line-height:1;letter-spacing:-.02em}
+
+/* contact */
+.contact{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:end;padding-block:clamp(28px,4vw,44px) clamp(48px,7vw,88px)}
+@media (max-width:860px){.contact{grid-template-columns:minmax(0,1fr)}}
+.contact h2{font-family:var(--display);font-stretch:125%;font-weight:850;font-size:clamp(2.2rem,5.6vw,4.2rem);line-height:.95;letter-spacing:-.035em;margin:0 0 18px;text-wrap:balance}
+.contact p{margin:0;max-width:40em;font-size:17.5px}
+.reach{display:flex;flex-direction:column;gap:10px}
+.email{display:flex;align-items:stretch;border:1.5px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--sheet)}
+.email code{flex:1;min-width:0;padding:13px 14px;font-family:var(--mono);font-size:13.5px;overflow-wrap:anywhere;user-select:all}
+.email button{flex:none;border:0;border-left:1.5px solid var(--ink);background:var(--ink);color:var(--paper);font-family:var(--display);font-weight:650;font-size:14px;padding:0 16px;cursor:pointer;min-width:84px}
+.reach .cta .btn{flex:1 1 140px;justify-content:center}
+footer{border-top:1px solid var(--rule);padding-block:20px 28px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <a class="brand" href="#top">Arwindh C N</a>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li class="opt"><a href="#more">Projects</a></li>
+      <li class="opt"><a href="#experience">Experience</a></li>
+      <li class="opt"><a href="#skills">Skills</a></li>
+      <li><a class="hire" href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="top">
+  <header class="wrap hero">
+    <div class="hero-text">
+      <p class="label">Machine learning engineer · Coimbatore, India</p>
+      <h1><span>Arwindh</span><span class="initials">C N</span></h1>
+      <p class="lede">I build machine learning for messy, connected data. Recently: a heterogeneous graph neural network that ranks obesity drugs for patients with comorbidities, and an entity-resolution pipeline that matched 10 million business records on an 8&nbsp;GB laptop.</p>
+      <ul class="status">
+        <li class="open">Open to ML engineering roles</li>
+        <li>B.Tech CSE, Amrita Vishwa Vidyapeetham</li>
+      </ul>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/ArwindhCN" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+        <a class="btn" href="https://www.linkedin.com/in/arwindhcn" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M0 1.15C0 .52.52 0 1.15 0h13.7C15.48 0 16 .52 16 1.15v13.7c0 .63-.52 1.15-1.15 1.15H1.15C.52 16 0 15.48 0 14.85V1.15zm4.94 12.24V6.17H2.54v7.22h2.4zM3.74 5.18c.84 0 1.36-.55 1.36-1.25-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .7.52 1.25 1.33 1.25h.01zm2.46 8.21h2.4V9.36c0-.22.02-.43.08-.59.18-.43.57-.88 1.23-.88.87 0 1.22.66 1.22 1.63v3.87h2.4V9.25c0-2.22-1.18-3.25-2.76-3.25-1.27 0-1.84.7-2.16 1.2v.02h-.01l.01-.02V6.17h-2.4c.03.68 0 7.22 0 7.22z"/></svg>
+          LinkedIn
+        </a>
+        <a class="btn" href="#contact">Email me</a>
+      </div>
+    </div>
+
+    <figure class="kg" aria-label="Animated heterogeneous graph of patients, comorbidities, genes, proteins, Reactome pathways and anti-obesity drugs">
+      <canvas id="kg-canvas" aria-hidden="true"></canvas>
+      <div class="kg-tip" id="kg-tip" hidden><b></b><span></span></div>
+      <figcaption>
+        <ul class="legend">
+          <li><i style="--c:var(--n-patient)"></i>Patient</li>
+          <li><i class="ring" style="--c:var(--n-disease)"></i>Comorbidity</li>
+          <li><i style="--c:var(--n-gene)"></i>Gene</li>
+          <li><i class="sq" style="--c:var(--n-protein)"></i>Protein</li>
+          <li><i class="dia" style="--c:var(--n-pathway)"></i>Reactome pathway</li>
+          <li><i style="--c:var(--n-drug)"></i>Drug</li>
+        </ul>
+        <p class="kg-note">The graph shape behind my GNN work. Pulses trace message passing from a patient, through comorbidities, genes and shared pathways, to a candidate drug. Hover or tap a node.</p>
+      </figcaption>
+    </figure>
+  </header>
+
+  <div class="wrap">
+    <div class="metrics" aria-label="Headline results">
+      <div class="metric">
+        <p class="num">0.979<small>F0.5</small></p>
+        <p>Held-out macro F0.5 on business entity resolution across 10M records, up from a 0.799 rules baseline.</p>
+        <span class="label">Amazon ML Challenge 2026</span>
+      </div>
+      <div class="metric">
+        <p class="num">100%<small>vs 89.4%</small></p>
+        <p>Agreement with RCT-established treatment guidelines across four cohorts, against an XGBoost baseline.</p>
+        <span class="label">Heterogeneous GNN · n = 5,605</span>
+      </div>
+      <div class="metric">
+        <p class="num">178,138<small>edges</small></p>
+        <p>Relationships across 50,957 nodes from six biomedical sources, with zero orphan nodes.</p>
+        <span class="label">BioPrecision-AI knowledge graph</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORK -->
+  <section class="wrap block" id="work">
+    <div class="sec-head">
+      <h2>Selected work</h2>
+      <span class="label">3 case studies</span>
+    </div>
+
+    <!-- Amazon ML -->
+    <article class="case" id="entity-resolution">
+      <aside class="case-meta">
+        <p class="label kicker">Competition · Amazon ML Challenge 2026</p>
+        <h3>Business entity resolution at 10-million-record scale</h3>
+        <dl class="facts">
+          <dt>Team</dt><dd>Runtime Terrors, 3 people</dd>
+          <dt>My role</dt><dd>Pipeline, experiments and submissions</dd>
+          <dt>Budget</dt><dd>3 days on one 8&nbsp;GB MacBook</dd>
+          <dt>Result</dt><dd>0.9794 held-out macro F0.5</dd>
+        </dl>
+        <ul class="chips">
+          <li>LightGBM</li><li>PyTorch</li><li>Transformers</li><li>MiniLM cross-encoder</li><li>RapidFuzz</li><li>NumPy</li><li>Parquet</li>
+        </ul>
+        <a class="link-out" href="https://github.com/ArwindhCN/amazon-ml-2026-entity-resolution" target="_blank" rel="noopener">Code, methodology and experiment log ↗</a>
+      </aside>
+      <div class="case-body">
+        <p>Match each of 1.7M businesses to every record of the same business among 10M records from two other sources. Names arrive with typos, abbreviations, reordered addresses and Indian scripts, and one test country (France) never appears in training. The metric is macro F0.5, so a false match costs twice as much as a missed one.</p>
+
+        <figure class="fig">
+          <div class="fig-head">
+            <p class="fig-title">Nine versions, each one measured</p>
+            <p class="fig-sub">Held-out macro F0.5 by pipeline version. v1 (hand-tuned rules) scored 0.799, below this axis. *v9 trained, test run not finished.</p>
+          </div>
+          <div class="chart" id="score-chart" role="img" aria-label="Held-out macro F0.5 rises from 0.9528 at v2 to 0.9794 at v8, the final submission."></div>
+        </figure>
+
+        <div class="fig-row">
+          <figure class="fig">
+            <div class="fig-head">
+              <p class="fig-title">A learned filter before the expensive model</p>
+              <p class="fig-sub">Candidate pairs on the test set</p>
+            </div>
+            <div class="bars">
+              <div class="bar-row"><span class="bar-lbl">After bidirectional blocking</span><span class="bar-val">93.4M</span><span class="bar-track"><span class="bar muted" style="--w:100%"></span></span></div>
+              <div class="bar-row"><span class="bar-lbl">After LightGBM cascade, p ≥ 0.03</span><span class="bar-val">7.2M</span><span class="bar-track"><span class="bar" style="--w:7.7%"></span></span></div>
+            </div>
+            <p class="fig-sub">13× fewer pairs, about 4.2 per business, with no loss in F0.5.</p>
+          </figure>
+          <figure class="fig">
+            <div class="fig-head">
+              <p class="fig-title">Fitting 10M records into 8&nbsp;GB</p>
+              <p class="fig-sub">Peak memory of the blocking stage</p>
+            </div>
+            <div class="bars">
+              <div class="bar-row"><span class="bar-lbl">Python string keys</span><span class="bar-val">8.6 GB</span><span class="bar-track"><span class="bar muted" style="--w:86%"></span><span class="limit" style="--at:80%"></span></span></div>
+              <div class="bar-row"><span class="bar-lbl">Packed uint64 index</span><span class="bar-val">3.7 GB</span><span class="bar-track"><span class="bar" style="--w:37%"></span><span class="limit" style="--at:80%"></span></span></div>
+            </div>
+            <p class="fig-sub">Dashed line: the laptop's 8 GB of RAM. Scale 0 to 10 GB.</p>
+          </figure>
+        </div>
+
+        <h4>What moved the score</h4>
+        <ul class="moves">
+          <li><span><b>Rarity-based blocking over a packed index.</b> Keys come from each record's rarest words. A 40-bit key hash and a 24-bit record ID share one sorted <code class="num-inline">uint64</code> array per country, so every lookup is a binary search.</span></li>
+          <li><span><b>Bidirectional blocking with a hub cap.</b> Searching backwards from every S2/S3 record lifted candidate recall from <span class="num-inline">0.953</span> to <span class="num-inline">0.971</span>. The cap stopped one business from collecting 142,645 candidates through the word "com".</span></li>
+          <li><span><b>A fine-tuned transformer as one feature.</b> A 22.7M-parameter MiniLM cross-encoder, fine-tuned in folds split by entity so it never scores entities it trained on. Alone it scored 0.961; as a LightGBM feature it added <span class="num-inline">+0.005</span>.</span></li>
+          <li><span><b>Learned transliteration.</b> A 1,305-word Indian-script to Latin dictionary learned only from training pairs. Median name similarity on true pairs went from <span class="num-inline">0.10</span> to <span class="num-inline">1.00</span>.</span></li>
+          <li><span><b>An expected-F0.5 decision layer.</b> Each record goes to at most one business, then each business keeps the candidate subset that maximises expected F0.5, including predicting nothing.</span></li>
+        </ul>
+        <p class="aside">I logged what failed too. A three-model LightGBM ensemble scored 0.9660 against 0.9661 for one model. Half precision on the Apple GPU was slower (435 vs 548 pairs/s). Error analysis on v7 showed 41.5% of remaining errors were true matches that never reached the candidate set, which is why later versions went after recall in blocking.</p>
+
+        <details class="data">
+          <summary>All nine versions</summary>
+          <div class="tbl">
+            <table>
+              <thead><tr><th>Ver.</th><th>Main change</th><th class="n">Cand. / business</th><th class="n">Val F0.5</th><th class="n">Held-out F0.5</th></tr></thead>
+              <tbody id="version-rows"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </article>
+
+    <!-- GNN -->
+    <article class="case" id="gnn">
+      <aside class="case-meta">
+        <p class="label kicker">Internship · Jun – Jul 2026</p>
+        <h3>Comorbidity-aware drug ranking with a heterogeneous GNN</h3>
+        <dl class="facts">
+          <dt>Role</dt><dd>Machine Learning Intern, Graph Neural Networks, Amrita Vishwa Vidyapeetham</dd>
+          <dt>Data</dt><dd>5,605 synthetic patients (Synthea) in 4 cohorts</dd>
+          <dt>Model</dt><dd>2-layer HAN, PyTorch Geometric</dd>
+          <dt>Baseline</dt><dd>XGBoost on flat features</dd>
+        </dl>
+        <ul class="chips">
+          <li>PyTorch</li><li>PyTorch Geometric</li><li>HANConv</li><li>XGBoost</li><li>Reactome</li><li>pandas</li>
+        </ul>
+      </aside>
+      <div class="case-body">
+        <p>Five anti-obesity drugs (semaglutide, liraglutide, tirzepatide, orlistat, phentermine) do not suit every patient equally. Type 2 diabetes, cardiovascular disease or chronic kidney disease changes which one is safest and most effective. The model has to rank them for each patient and agree with what large clinical trials established.</p>
+
+        <ol class="pipe" aria-label="Model pipeline">
+          <li><b>Heterogeneous graph</b><span>patient, gene, protein, drug, disease nodes</span></li>
+          <li><b>Pathway edges</b><span>genes linked by Reactome co-membership</span></li>
+          <li><b>Type projections</b><span>per-type linear layers to one hidden space</span></li>
+          <li><b>2 × HANConv</b><span>multi-head attention over meta-paths</span></li>
+          <li><b>Drug–disease scores</b><span>sample-weighted BCE loss</span></li>
+        </ol>
+
+        <figure class="fig">
+          <div class="fig-head">
+            <p class="fig-title">Agreement with RCT-established guidelines</p>
+            <p class="fig-sub">Rankings checked against SUSTAIN-6, SURPASS and related trials. 4 cohorts, n = 5,605. Scale 0 to 100%.</p>
+          </div>
+          <div class="bars">
+            <div class="bar-row"><span class="bar-lbl">Heterogeneous GNN (HAN)</span><span class="bar-val">100%</span><span class="bar-track"><span class="bar" style="--w:100%"></span></span></div>
+            <div class="bar-row"><span class="bar-lbl">XGBoost, flat features</span><span class="bar-val">89.4%</span><span class="bar-track"><span class="bar muted" style="--w:89.4%"></span></span></div>
+          </div>
+        </figure>
+
+        <h4>Auditing my own pipeline</h4>
+        <p>A perfect score is a reason to look harder. Before trusting it, I audited the labels and features for ways the model could be learning my assumptions instead of the evidence.</p>
+        <div class="audit">
+          <div class="audit-row">
+            <div class="found"><span class="tag">Found</span>Hand-written base scores ranked one drug first in every cohort before any patient was seen. The GNN was learning an opinion.</div>
+            <div class="fixed"><span class="tag">Fixed</span>Base scores derived from trial outcomes: weight loss, HbA1c change, adverse events and discontinuation, weighted equally.</div>
+          </div>
+          <div class="audit-row">
+            <div class="found"><span class="tag">Found</span>Textbook lab thresholds almost never fired. 98.6% of patients sat below the HbA1c cut-off, so lab features barely affected labels.</div>
+            <div class="fixed"><span class="tag">Fixed</span>Thresholds calibrated to the cohort's own percentiles, so labs can change a ranking for edge cases.</div>
+          </div>
+          <div class="audit-row">
+            <div class="found"><span class="tag">Found</span>Synthetic HbA1c values below 4.0%, which is not possible in a living person.</div>
+            <div class="fixed"><span class="tag">Fixed</span>Physiological clamping to 4.5–15.0% before any computation.</div>
+          </div>
+          <div class="audit-row">
+            <div class="found"><span class="tag">Found</span>Imputed trial rows counted as much as real RCT results, and a contraindicated drug still scored as an option for CVD.</div>
+            <div class="fixed"><span class="tag">Fixed</span>Imputed rows down-weighted in the loss, contraindications enforced, and every output labelled RCT, imputed or contraindicated.</div>
+          </div>
+        </div>
+        <p class="aside">Ablation studies on within-group personalization then set the boundaries of what graph-based decision support can claim here. Research prototype on synthetic patients, not for clinical use.</p>
+      </div>
+    </article>
+
+    <!-- BioPrecision -->
+    <article class="case" id="bioprecision">
+      <aside class="case-meta">
+        <p class="label kicker">Project · Research prototype</p>
+        <h3>BioPrecision-AI: explainable drug-safety checks on a knowledge graph</h3>
+        <dl class="facts">
+          <dt>Sources</dt><dd>PharmGKB, Reactome, UniProt, SIDER, DGIdb, FDA labels</dd>
+          <dt>Engine</dt><dd>Deterministic rules over graph paths</dd>
+          <dt>ML</dt><dd>Random Forest baseline for weight-loss response</dd>
+          <dt>Tests</dt><dd>10 of 10 passing: data integrity, engine, API, end-to-end</dd>
+        </dl>
+        <ul class="chips">
+          <li>Neo4j</li><li>Cypher</li><li>FastAPI</li><li>React</li><li>scikit-learn</li><li>Python</li>
+        </ul>
+        <a class="link-out" href="https://github.com/ArwindhCN/BioPrecision-AI" target="_blank" rel="noopener">Repository and audit reports ↗</a>
+      </aside>
+      <div class="case-body">
+        <p>Given a patient's medications, conditions and genetic variants, flag the risks a prescriber should see, and show the graph path that explains each flag. Six public biomedical datasets are normalised and loaded into one Neo4j graph, which a FastAPI service queries for a React dashboard.</p>
+
+        <div class="spec">
+          <div><b>50,957</b><span>nodes</span></div>
+          <div><b>178,138</b><span>relationships</span></div>
+          <div><b>0</b><span>orphan nodes</span></div>
+          <div><b>8 · 10</b><span>node · edge types</span></div>
+        </div>
+
+        <figure class="fig">
+          <div class="fig-head">
+            <p class="fig-title">Graph schema</p>
+            <p class="fig-sub">Node labels with counts where the graph reports them, and the ten relationship types.</p>
+          </div>
+          <div class="schema-scroll">
+            <svg id="schema" viewBox="0 0 730 352" role="img" aria-label="Schema: Drug TARGETS Gene; Gene ASSOCIATED_WITH Disease; Drug CONTRAINDICATED_FOR Disease; Drug HAS_SIDE_EFFECT SideEffect; Gene ENCODES Protein; Gene HAS_VARIANT Variant and Variant LOCATED_IN Gene; Gene PARTICIPATES_IN Pathway; Gene and Variant SUPPORTED_BY Evidence; Drug INTERACTS_WITH Drug."></svg>
+          </div>
+        </figure>
+
+        <h4>What the engine flags</h4>
+        <ul class="risks">
+          <li data-sev="high"><b>Drug–drug interactions</b><span>Harmful co-prescribed combinations</span></li>
+          <li data-sev="high"><b>Contraindications</b><span>Drugs ruled out by an existing condition</span></li>
+          <li data-sev="med"><b>Polypharmacy</b><span>Risk from many concurrent drugs</span></li>
+          <li data-sev="med"><b>Duplicate therapy</b><span>Two drugs on the same receptor</span></li>
+          <li data-sev="low"><b>Pharmacogenomics</b><span>Variants that change drug response</span></li>
+          <li data-sev="low"><b>Side-effect risk</b><span>Severe effects matched to the patient</span></li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- MORE PROJECTS -->
+  <section class="wrap block" id="more">
+    <div class="sec-head">
+      <h2>More projects</h2>
+      <span class="label">Tools, coursework and side builds</span>
+    </div>
+    <div class="grid">
+      <article class="card wide">
+        <div class="wide-inner">
+          <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+            <span class="label">Shell plugin · Python, zsh</span>
+            <h3>zsh-next</h3>
+            <p>Predicts the command you will run after this one, not just the one you are typing. A bigram model over your shell history runs as a background daemon on a Unix socket and answers in about 1&nbsp;ms, using only the Python standard library.</p>
+            <a class="link-out" href="https://github.com/ArwindhCN/zsh-next" target="_blank" rel="noopener">zsh-next on GitHub ↗</a>
+          </div>
+          <div class="term" aria-label="Terminal demo: typing a command shows the predicted next command as ghost text">
+            <div class="bar3"><i></i><i></i><i></i></div>
+            <div class="line"><span class="pr">~/ml $ </span><span id="zs-typed">git commit -m "fix typo"</span><span class="caret"></span><span class="ghost" id="zs-ghost">  →  git push</span></div>
+            <div class="hint">ghost text · press → to accept</div>
+          </div>
+        </div>
+      </article>
+      <article class="card">
+        <span class="label">Framework · TypeScript</span>
+        <h3>NitroStack</h3>
+        <p>Worked on a TypeScript framework for production MCP servers and AI-native apps: dependency injection, middleware pipelines, JWT and OAuth 2.1 auth, Zod validation end to end, and React widgets attached to tool outputs.</p>
+        <div class="foot"><a class="link-out" href="https://nitrostack.ai" target="_blank" rel="noopener">nitrostack.ai ↗</a></div>
+      </article>
+      <article class="card">
+        <span class="label">Capstone · scikit-learn</span>
+        <h3>Classification and regression tracks</h3>
+        <p>Malware detection from memory dumps (CIC-MalMem-2022) and superconductor critical-temperature regression, comparing ten model families with tuning, residual analysis and 5-fold cross-validation.</p>
+        <div class="foot"><a class="link-out" href="https://github.com/ArwindhCN/ml_capstone_project" target="_blank" rel="noopener">Notebooks ↗</a></div>
+      </article>
+      <article class="card">
+        <span class="label">Security · Python</span>
+        <h3>Phishing URL detector</h3>
+        <p>Hand-engineered lexical features from raw URLs feeding a trained classifier that separates phishing links from legitimate ones.</p>
+        <div class="foot"><a class="link-out" href="https://github.com/ArwindhCN/phishing-url-detector" target="_blank" rel="noopener">Code ↗</a></div>
+      </article>
+      <article class="card">
+        <span class="label">Learning log · Jupyter</span>
+        <h3>my-ml-journey</h3>
+        <p>44 notebooks written chapter by chapter, from linear algebra and classical ML through neural networks in Keras and PyTorch, now on knowledge graphs and Neo4j.</p>
+        <div class="foot"><a class="link-out" href="https://github.com/ArwindhCN/my-ml-journey" target="_blank" rel="noopener">Notebooks ↗</a></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="wrap block" id="experience">
+    <div class="sec-head">
+      <h2>Experience</h2>
+      <span class="label">Most recent first</span>
+    </div>
+    <ol class="timeline">
+      <li>
+        <time>Jun – Jul 2026</time>
+        <div class="role">
+          <h3>Machine Learning Intern, Graph Neural Networks</h3>
+          <p class="org">Amrita Vishwa Vidyapeetham, Coimbatore</p>
+          <p>Built the heterogeneous GNN for comorbidity-aware drug ranking described above. Fixed pipeline instability and label-normalisation bugs, and ran the ablations that set the model's limits.</p>
+        </div>
+      </li>
+      <li>
+        <time>Jan 2026</time>
+        <div class="role">
+          <h3>Co-Head, Security and Discipline</h3>
+          <p class="org">Anokha 2026, 13th national-level techfest, Coimbatore</p>
+          <p>Core team member overseeing security, discipline and human resources for a large national technical festival.</p>
+        </div>
+      </li>
+      <li>
+        <time>May – Aug 2025</time>
+        <div class="role">
+          <h3>Team Lead and Student Researcher</h3>
+          <p class="org">Live-in-Labs®, Amrita Vishwa Vidyapeetham</p>
+          <p>Led a multidisciplinary team doing field research on water access in coastal Tamil Nadu. Ran data collection and community interviews, turned field data into findings, and wrote up a study on community resilience that became a conference publication.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- SKILLS + EDUCATION -->
+  <section class="wrap block" id="skills">
+    <div class="sec-head">
+      <h2>Skills, with evidence</h2>
+      <span class="label">Where each tool was used</span>
+    </div>
+    <div class="two">
+      <div class="skills">
+        <div class="skill">
+          <h3>Graph ML</h3>
+          <div><p class="tools">PyTorch Geometric · Neo4j · Cypher</p><p class="used">HAN drug ranking; 178k-relationship knowledge graph</p></div>
+        </div>
+        <div class="skill">
+          <h3>Tabular ML</h3>
+          <div><p class="tools">LightGBM · XGBoost · scikit-learn</p><p class="used">Entity-resolution cascade; GNN baseline; Random Forest response model</p></div>
+        </div>
+        <div class="skill">
+          <h3>Deep learning and NLP</h3>
+          <div><p class="tools">PyTorch · TensorFlow · Hugging Face Transformers · OpenCV · NLTK</p><p class="used">Fine-tuned MiniLM cross-encoder; learned transliteration</p></div>
+        </div>
+        <div class="skill">
+          <h3>Data at scale</h3>
+          <div><p class="tools">pandas · NumPy · Parquet · SQL</p><p class="used">10M-record pipeline held under 8 GB of RAM</p></div>
+        </div>
+        <div class="skill">
+          <h3>Apps and serving</h3>
+          <div><p class="tools">FastAPI · React · TypeScript · Node.js · Docker · Linux · Bash</p><p class="used">BioPrecision-AI stack; NitroStack</p></div>
+        </div>
+      </div>
+      <div class="edu">
+        <span class="label">Education</span>
+        <h3>B.Tech, Computer Science and Engineering</h3>
+        <p>Amrita Vishwa Vidyapeetham, Coimbatore<br><span class="mono" style="font-size:13px;color:var(--ink-2)">2022 – 2026 (expected)</span></p>
+        <div class="gpa"><b>8.41</b><span class="mono" style="font-size:13px;color:var(--ink-2)">/ 10 CGPA</span></div>
+        <p style="font-size:14.5px;color:var(--ink-2)">Coursework: Machine Learning, Deep Learning, Linear Algebra, Probability and Statistics, Data Structures and Algorithms, Database Management Systems.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="wrap block" id="contact">
+    <div class="sec-head">
+      <h2>Contact</h2>
+      <span class="label">Email · GitHub · LinkedIn</span>
+    </div>
+    <div class="contact">
+      <div>
+        <h2>Hiring for machine learning?</h2>
+        <p>I'm looking for ML engineering roles where models have to work on real, messy data. Email is the fastest way to reach me.</p>
+      </div>
+      <div class="reach">
+        <div class="email">
+          <code id="email">cb.sc.u4cse24207@cb.students.amrita.edu</code>
+          <button type="button" id="copy-email">Copy</button>
+        </div>
+        <div class="cta">
+          <a class="btn" href="https://github.com/ArwindhCN" target="_blank" rel="noopener">GitHub ↗</a>
+          <a class="btn" href="https://www.linkedin.com/in/arwindhcn" target="_blank" rel="noopener">LinkedIn ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Arwindh C N</span>
+    <span>Numbers are from my repositories and project reports.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const reduceMQ = matchMedia('(prefers-reduced-motion: reduce)');
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+  /* ---------- copy email ---------- */
+  const copyBtn = document.getElementById('copy-email');
+  copyBtn.addEventListener('click', async () => {
+    const el = document.getElementById('email');
+    const text = el.textContent.trim();
+    try { await navigator.clipboard.writeText(text); copyBtn.textContent = 'Copied'; }
+    catch (e) {
+      const r = document.createRange(); r.selectNodeContents(el);
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      copyBtn.textContent = 'Selected';
+    }
+    setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1800);
+  });
+
+  /* ---------- hero graph ---------- */
+  (function graph(){
+    const cv = document.getElementById('kg-canvas');
+    const ctx = cv.getContext('2d');
+    const panel = cv.parentElement;
+    const tip = document.getElementById('kg-tip');
+    let s = 11;
+    const rnd = () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+
+    const TYPE = {
+      patient:{name:'Patient', r:3.4, col:-1.6},
+      disease:{name:'Comorbidity', r:7, col:-0.85},
+      gene:{name:'Gene', r:5, col:0},
+      protein:{name:'Protein', r:3.2, col:-0.1},
+      pathway:{name:'Reactome pathway', r:5.5, col:0.4},
+      drug:{name:'Drug', r:8, col:1.15}
+    };
+    const nodes = [], links = [], by = {};
+    const add = (id, t, label, info) => { const n = {id, t, label, info, x:0, y:0, vx:0, vy:0, nb:new Set(), glow:0}; nodes.push(n); by[id] = n; };
+    const link = (a, b) => { a = by[a]; b = by[b]; links.push({a, b}); a.nb.add(b); b.nb.add(a); };
+
+    [['sema','Semaglutide','GLP-1 receptor agonist'],['lira','Liraglutide','GLP-1 receptor agonist'],['tirz','Tirzepatide','GLP-1 / GIP dual agonist'],['orli','Orlistat','Pancreatic lipase inhibitor'],['phen','Phentermine','Sympathomimetic amine']]
+      .forEach(d => add(d[0], 'drug', d[1], d[2]));
+    [['obes','Obesity','Shared by all four cohorts'],['t2d','T2D','Type 2 diabetes cohort'],['cvd','CVD','Cardiovascular disease cohort'],['ckd','CKD','Chronic kidney disease cohort']]
+      .forEach(d => add(d[0], 'disease', d[1], d[2]));
+    const genes = [['GLP1R','P43220'],['GIPR','P48546'],['MC4R','P32245'],['FTO','Q9C0B1'],['LEP','P41159'],['PPARG','P37231'],['TCF7L2','Q9NQB0'],['PNLIP','P16233'],['SLC6A2','P23975'],['APOE','P02649'],['UMOD','P07911']];
+    genes.forEach(([g, u]) => { add(g, 'gene', g, 'Gene'); add('p_' + g, 'protein', u, 'UniProt protein encoded by ' + g); link(g, 'p_' + g); });
+    [['gpcr','GPCR ligand binding'],['lipid','Digestion of dietary lipid'],['energy','Integration of energy metabolism'],['adipo','Adipocyte differentiation']]
+      .forEach(d => add(d[0], 'pathway', d[1], 'Pathway co-membership edge'));
+    [['sema','GLP1R'],['lira','GLP1R'],['tirz','GLP1R'],['tirz','GIPR'],['orli','PNLIP'],['phen','SLC6A2']].forEach(e => link(e[0], e[1]));
+    [['GLP1R','gpcr'],['GIPR','gpcr'],['MC4R','gpcr'],['PNLIP','lipid'],['GLP1R','energy'],['GIPR','energy'],['TCF7L2','energy'],['PPARG','adipo'],['LEP','adipo']].forEach(e => link(e[0], e[1]));
+    [['MC4R','obes'],['FTO','obes'],['LEP','obes'],['TCF7L2','t2d'],['PPARG','t2d'],['GLP1R','t2d'],['APOE','cvd'],['UMOD','ckd']].forEach(e => link(e[0], e[1]));
+    const cohorts = ['obes','t2d','cvd','ckd'];
+    for (let i = 0; i < 16; i++) {
+      const c = cohorts[i % 4], id = 'pt' + i;
+      add(id, 'patient', 'Patient ' + String(1000 + i * 37).slice(1), 'Synthetic patient, ' + by[c].info.replace(' cohort','').replace('Shared by all four cohorts','obesity only').toLowerCase());
+      link(id, 'obes'); if (c !== 'obes') link(id, c);
+    }
+
+    // message-passing paths: patient → disease → gene (→ pathway → gene)* → drug
+    const next = {patient:['disease'], disease:['gene'], gene:['pathway','drug'], pathway:['gene'], drug:[]};
+    const paths = [];
+    nodes.filter(n => n.t === 'patient').forEach(p => {
+      (function dfs(n, path){
+        if (n.t === 'drug') { paths.push(path.slice()); return; }
+        if (path.length > 6) return;
+        n.nb.forEach(m => { if (next[n.t].includes(m.t) && !path.includes(m)) { path.push(m); dfs(m, path); path.pop(); } });
+      })(p, [p]);
+    });
+
+    // layered force layout, seeded so it is identical on every load
+    const counts = {}, idx = {};
+    nodes.forEach(n => counts[n.t] = (counts[n.t] || 0) + 1);
+    nodes.forEach(n => { idx[n.t] = (idx[n.t] || 0) + 1; n.x = TYPE[n.t].col + (rnd() - .5) * .2; n.y = -1 + 2 * (idx[n.t] - .5) / counts[n.t] + (rnd() - .5) * .1; });
+    const restLen = (a, b) => { const k = [a.t, b.t].sort().join('-'); return ({'gene-protein':.13, 'disease-patient':.55, 'disease-gene':.6, 'gene-pathway':.32, 'drug-gene':.7})[k] || .5; };
+    function step(alpha){
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          let dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+          if (d2 < 1e-4) { dx = .01; dy = .01; d2 = 2e-4; }
+          const f = .0016 * alpha / d2;
+          a.vx += dx * f; a.vy += dy * f; b.vx -= dx * f; b.vy -= dy * f;
+        }
+      }
+      links.forEach(({a, b}) => {
+        const dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy) || 1e-3;
+        const f = (d - restLen(a, b)) * .06 * alpha / d;
+        a.vx += dx * f; a.vy += dy * f; b.vx -= dx * f; b.vy -= dy * f;
+      });
+      nodes.forEach(n => {
+        if (n.fixed) { n.vx = n.vy = 0; return; }
+        n.vx += (TYPE[n.t].col - n.x) * .05 * alpha;
+        n.vy += -n.y * .012 * alpha;
+        n.vx *= .55; n.vy *= .55;
+        n.x += n.vx; n.y += n.vy;
+      });
+    }
+    for (let k = 0; k < 600; k++) step(1 - k / 640);
+
+    // view
+    let W = 0, H = 0, dpr = 1, view = {sx:1, sy:1, ox:0, oy:0}, C = {};
+    const PAD = {l:22, r:96, t:40, b:22};
+    function fit(){
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      nodes.forEach(n => { x0 = Math.min(x0, n.x); x1 = Math.max(x1, n.x); y0 = Math.min(y0, n.y); y1 = Math.max(y1, n.y); });
+      const r = W < 440 ? 70 : PAD.r;
+      view.sx = (W - PAD.l - r) / (x1 - x0 || 1);
+      view.sy = (H - PAD.t - PAD.b) / (y1 - y0 || 1);
+      view.ox = PAD.l - x0 * view.sx; view.oy = PAD.t - y0 * view.sy;
+    }
+    const X = x => x * view.sx + view.ox, Y = y => y * view.sy + view.oy;
+    function readColors(){
+      C = {ink:css('--ink'), ink2:css('--ink-2'), rule:css('--rule'), sheet:css('--sheet'), accent:css('--accent'),
+           patient:css('--n-patient'), disease:css('--n-disease'), gene:css('--n-gene'), protein:css('--n-protein'), pathway:css('--n-pathway'), drug:css('--n-drug')};
+    }
+    function resize(){
+      const r = cv.getBoundingClientRect();
+      W = r.width; H = r.height; dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      fit(); draw(performance.now());
+    }
+
+    let hover = null, pulses = [], lastSpawn = 0, heat = 0, drag = null;
+    const sc = () => Math.max(.8, Math.min(1.15, W / 560));
+
+    function shape(n, r){
+      ctx.beginPath();
+      const x = X(n.x), y = Y(n.y);
+      if (n.t === 'protein') { ctx.rect(x - r, y - r, r * 2, r * 2); }
+      else if (n.t === 'pathway') { ctx.moveTo(x, y - r * 1.25); ctx.lineTo(x + r * 1.25, y); ctx.lineTo(x, y + r * 1.25); ctx.lineTo(x - r * 1.25, y); ctx.closePath(); }
+      else ctx.arc(x, y, r, 0, Math.PI * 2);
+    }
+
+    function draw(now){
+      if (!W) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      const k = sc();
+      // column headers
+      ctx.font = '500 10px "JetBrains Mono", ui-monospace, monospace';
+      ctx.fillStyle = C.ink2; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      const colsY = {patient:[], disease:[], gene:[], drug:[]};
+      nodes.forEach(n => { if (colsY[n.t]) colsY[n.t].push(X(n.x)); });
+      const mid = a => a.reduce((s, v) => s + v, 0) / a.length;
+      const heads = [['PATIENTS', mid(colsY.patient)], [W < 440 ? 'DISEASE' : 'COMORBIDITY', mid(colsY.disease)], [W < 440 ? 'GENES' : 'GENES · PATHWAYS', mid(colsY.gene)], ['DRUGS', mid(colsY.drug)]];
+      let prevRight = 4;
+      heads.forEach(([t, x], i) => {
+        if (W < 520 && i === 1) return;
+        const w = ctx.measureText(t).width;
+        const cx = Math.min(W - w / 2 - 6, Math.max(prevRight + 10 + w / 2, x));
+        ctx.fillText(t, cx, 22); prevRight = cx + w / 2;
+      });
+
+      const hl = hover ? new Set([hover, ...hover.nb]) : null;
+      // edges
+      ctx.lineWidth = 1;
+      links.forEach(({a, b}) => {
+        const on = hover && (a === hover || b === hover);
+        ctx.strokeStyle = on ? C.ink : C.rule;
+        ctx.globalAlpha = hover && !on ? .45 : 1;
+        ctx.lineWidth = on ? 1.5 : 1;
+        ctx.beginPath(); ctx.moveTo(X(a.x), Y(a.y)); ctx.lineTo(X(b.x), Y(b.y)); ctx.stroke();
+      });
+      ctx.globalAlpha = 1;
+
+      // pulses
+      pulses = pulses.filter(p => {
+        const e = (now - p.t0) / p.hop;
+        const seg = Math.floor(e);
+        if (seg >= p.path.length - 1) { p.path[p.path.length - 1].glow = 1; return false; }
+        const f = e - seg, ease = f < .5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2;
+        const a = p.path[seg], b = p.path[seg + 1];
+        const x = X(a.x) + (X(b.x) - X(a.x)) * ease, y = Y(a.y) + (Y(b.y) - Y(a.y)) * ease;
+        ctx.strokeStyle = C.accent; ctx.globalAlpha = .55; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.moveTo(X(a.x), Y(a.y)); ctx.lineTo(x, y); ctx.stroke();
+        ctx.globalAlpha = 1; ctx.fillStyle = C.accent;
+        ctx.beginPath(); ctx.arc(x, y, 2.8 * k, 0, Math.PI * 2); ctx.fill();
+        return true;
+      });
+
+      // nodes
+      nodes.forEach(n => {
+        const r = TYPE[n.t].r * k;
+        ctx.globalAlpha = hl && !hl.has(n) ? .3 : 1;
+        if (n.glow > .01) {
+          ctx.save(); ctx.globalAlpha *= n.glow * .5; ctx.fillStyle = C.drug;
+          ctx.beginPath(); ctx.arc(X(n.x), Y(n.y), r + 9 * n.glow, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+          n.glow *= .94;
+        }
+        shape(n, r);
+        if (n.t === 'disease') { ctx.fillStyle = C.sheet; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = C.disease; ctx.stroke(); }
+        else { ctx.fillStyle = C[n.t]; ctx.fill(); }
+        if (n === hover) { ctx.lineWidth = 2; ctx.strokeStyle = C.ink; shape(n, r + 3); ctx.stroke(); }
+      });
+      ctx.globalAlpha = 1;
+
+      // labels
+      ctx.textBaseline = 'middle';
+      nodes.forEach(n => {
+        const r = TYPE[n.t].r * k, x = X(n.x), y = Y(n.y);
+        const dim = hl && !hl.has(n);
+        ctx.globalAlpha = dim ? .3 : 1;
+        if (n.t === 'drug') {
+          ctx.font = '650 12.5px Archivo, "Helvetica Neue", Arial, sans-serif'; ctx.fillStyle = C.ink; ctx.textAlign = 'left';
+          ctx.fillText(W < 440 ? n.label.slice(0, 5) + '.' : n.label, x + r + 6, y);
+        } else if (n.t === 'disease') {
+          ctx.font = '700 11.5px Archivo, "Helvetica Neue", Arial, sans-serif'; ctx.fillStyle = C.ink; ctx.textAlign = 'center';
+          ctx.fillText(n.label, x, y - r - 9);
+        } else if (n.t === 'gene' && W >= 420) {
+          ctx.font = '500 9.5px "JetBrains Mono", ui-monospace, monospace'; ctx.fillStyle = C.ink2; ctx.textAlign = 'left';
+          ctx.fillText(n.label, x + r + 4, y);
+        }
+      });
+      ctx.globalAlpha = 1;
+    }
+
+    function spawn(now){
+      if (!paths.length || pulses.length > 5) return;
+      const p = paths[Math.floor(Math.random() * paths.length)];
+      pulses.push({path:p, t0:now, hop:520});
+    }
+
+    let visible = true, running = false;
+    function loop(now){
+      running = false;
+      if (!visible || document.hidden) return;
+      if (heat > .004) { step(heat); heat *= .94; fit(); }
+      if (!reduceMQ.matches && now - lastSpawn > 700) { spawn(now); lastSpawn = now; }
+      draw(now);
+      if (!reduceMQ.matches || heat > .004) kick();
+    }
+    function kick(){ if (!running) { running = true; requestAnimationFrame(loop); } }
+
+    function pick(ev){
+      const r = cv.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
+      let best = null, bd = 16 * 16;
+      nodes.forEach(n => { const dx = X(n.x) - mx, dy = Y(n.y) - my, d = dx * dx + dy * dy; if (d < bd) { bd = d; best = n; } });
+      return best;
+    }
+    function showTip(n){
+      if (!n) { tip.hidden = true; return; }
+      tip.querySelector('b').textContent = n.label;
+      tip.querySelector('span').textContent = TYPE[n.t].name + ' · ' + n.info;
+      tip.hidden = false;
+      const tw = tip.offsetWidth, th = tip.offsetHeight;
+      let left = X(n.x) + 14, top = Y(n.y) - th - 10;
+      if (left + tw > W - 8) left = X(n.x) - tw - 14;
+      if (top < 6) top = Y(n.y) + 14;
+      tip.style.left = Math.max(6, left) + 'px'; tip.style.top = top + 'px';
+    }
+    cv.addEventListener('pointermove', ev => {
+      if (drag) {
+        const r = cv.getBoundingClientRect();
+        drag.x = (ev.clientX - r.left - view.ox) / view.sx; drag.y = (ev.clientY - r.top - view.oy) / view.sy;
+        heat = Math.max(heat, .2); showTip(drag); kick(); return;
+      }
+      if (ev.pointerType !== 'mouse') return;
+      const n = pick(ev);
+      if (n !== hover) { hover = n; cv.style.cursor = n ? 'grab' : 'default'; showTip(n); draw(performance.now()); kick(); }
+    });
+    cv.addEventListener('pointerleave', () => { if (!drag) { hover = null; showTip(null); draw(performance.now()); } });
+    cv.addEventListener('pointerdown', ev => {
+      const n = pick(ev);
+      if (ev.pointerType === 'mouse') {
+        if (n) { drag = n; n.fixed = true; cv.setPointerCapture(ev.pointerId); cv.style.cursor = 'grabbing'; }
+      } else { hover = n === hover ? null : n; showTip(hover); draw(performance.now()); }
+    });
+    const endDrag = () => { if (drag) { drag.fixed = false; drag = null; cv.style.cursor = hover ? 'grab' : 'default'; heat = Math.max(heat, .15); kick(); } };
+    cv.addEventListener('pointerup', endDrag);
+    cv.addEventListener('pointercancel', endDrag);
+
+    readColors();
+    new ResizeObserver(resize).observe(cv);
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) kick(); }).observe(cv);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
+    const retheme = () => { readColors(); draw(performance.now()); };
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);
+    new MutationObserver(retheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+    reduceMQ.addEventListener('change', kick);
+    if (document.fonts) document.fonts.ready.then(() => draw(performance.now()));
+    resize(); kick();
+  })();
+
+  /* ---------- entity resolution score chart ---------- */
+  const VERS = [
+    {v:'v1', change:'Hand-tuned rules', cand:50, val:.799, hold:null},
+    {v:'v2', change:'LightGBM, 38 pair and group features, expected-F0.5 decision', cand:50, val:.9520, hold:.9528},
+    {v:'v3', change:'Learned Indian-script to Latin dictionary, shared-address context', cand:50, val:.9610, hold:.9613},
+    {v:'v4', change:'Learned candidate filter (cascade)', cand:3.87, val:.9621, hold:.9615},
+    {v:'v5', change:'Business name-uniqueness context', cand:3.79, val:.9644, hold:.9637},
+    {v:'v6', change:'Character 3-grams and reverse competition', cand:3.79, val:.9688, hold:.9677},
+    {v:'v7', change:'Bidirectional blocking and hub cap', cand:3.84, val:.9747, hold:.9742},
+    {v:'v8', change:'Fine-tuned MiniLM cross-encoder as a feature (final)', cand:3.84, val:.9792, hold:.9794, final:true},
+    {v:'v9', change:'Deeper reverse blocking (test run not finished)', cand:3.91, val:.9798, hold:.9802, unfinished:true}
+  ];
+  document.getElementById('version-rows').innerHTML = VERS.map(d =>
+    `<tr class="${d.final ? 'final' : ''}"><td class="n" style="text-align:left">${d.v}</td><td>${d.change}</td><td class="n">${d.cand}</td><td class="n">${d.val.toFixed(d.val < .9 ? 3 : 4)}</td><td class="n">${d.hold == null ? '–' : d.hold.toFixed(4)}</td></tr>`).join('');
+
+  (function scoreChart(){
+    const host = document.getElementById('score-chart');
+    const data = VERS.filter(d => d.hold != null);
+    const tipEl = document.createElement('div'); tipEl.className = 'chart-tip'; tipEl.hidden = true;
+    let geo = null;
+    function render(){
+      const W = host.clientWidth; if (!W) return;
+      const H = W < 520 ? 220 : 260;
+      const m = {l:44, r:16, t:28, b:28};
+      const x = i => m.l + 8 + i * (W - m.l - m.r - 16) / (data.length - 1);
+      const y0 = .948, y1 = .984;
+      const y = v => m.t + (1 - (v - y0) / (y1 - y0)) * (H - m.t - m.b);
+      let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">`;
+      [.95, .96, .97, .98].forEach(t => { s += `<line class="gl" x1="${m.l}" x2="${W - m.r}" y1="${y(t)}" y2="${y(t)}"/><text class="yt" x="${m.l - 8}" y="${y(t) + 3.5}">${t.toFixed(2)}</text>`; });
+      const fi = data.findIndex(d => d.final), last = data.length - 1;
+      const solid = data.slice(0, fi + 1).map((d, i) => `${x(i)},${y(d.hold)}`).join(' L');
+      s += `<path class="ln" d="M${solid}"/>`;
+      s += `<path class="ln dash" d="M${x(fi)},${y(data[fi].hold)} L${x(last)},${y(data[last].hold)}"/>`;
+      s += `<line class="xh" id="sc-xh" x1="0" x2="0" y1="${m.t}" y2="${H - m.b}" visibility="hidden"/>`;
+      data.forEach((d, i) => {
+        s += `<circle class="pt${d.final ? ' fin' : ''}${d.unfinished ? ' unf' : ''}" data-i="${i}" cx="${x(i)}" cy="${y(d.hold)}" r="${d.final ? 5.5 : 3.6}"/>`;
+        s += `<text class="xt" x="${x(i)}" y="${H - 9}">${d.v}${d.unfinished ? '*' : ''}</text>`;
+      });
+      s += `<text class="fl" x="${x(fi) - 10}" y="${y(data[fi].hold) - 12}" text-anchor="end">0.9794 final</text>`;
+      s += `<text class="fl" x="${x(0) + 10}" y="${y(data[0].hold) + 4}" text-anchor="start" style="font-weight:600;fill:var(--ink-2)">0.9528</text>`;
+      const bw = (W - m.l - m.r) / (data.length - 1);
+      data.forEach((d, i) => { s += `<rect class="hit" data-i="${i}" x="${x(i) - bw / 2}" y="${m.t - 10}" width="${bw}" height="${H - m.t - m.b + 10}"/>`; });
+      s += `</svg>`;
+      host.innerHTML = s; host.appendChild(tipEl);
+      geo = {x, y};
+    }
+    function show(i){
+      const svg = host.querySelector('svg'); if (!svg || !geo) return;
+      svg.querySelectorAll('.pt').forEach(p => p.classList.toggle('on', +p.dataset.i === i));
+      const xh = svg.getElementById ? svg.getElementById('sc-xh') : svg.querySelector('#sc-xh');
+      if (i < 0) { tipEl.hidden = true; xh.setAttribute('visibility', 'hidden'); return; }
+      const d = data[i], prev = data[i - 1];
+      xh.setAttribute('x1', geo.x(i)); xh.setAttribute('x2', geo.x(i)); xh.setAttribute('visibility', 'visible');
+      const delta = prev ? (d.hold - prev.hold >= 0 ? '+' : '') + (d.hold - prev.hold).toFixed(4) : 'first model, rules scored 0.799';
+      tipEl.innerHTML = `<b>${d.v}</b> · ${d.change}<span>held-out ${d.hold.toFixed(4)} · ${delta}</span>`;
+      tipEl.hidden = false;
+      const W = host.clientWidth, tw = tipEl.offsetWidth;
+      const cx = Math.max(tw / 2 + 4, Math.min(W - tw / 2 - 4, geo.x(i)));
+      tipEl.style.left = cx + 'px'; tipEl.style.top = geo.y(d.hold) + 'px';
+    }
+    host.addEventListener('pointerover', e => { const r = e.target.closest('.hit'); if (r) show(+r.dataset.i); });
+    host.addEventListener('pointerdown', e => { const r = e.target.closest('.hit'); if (r) show(+r.dataset.i); });
+    host.addEventListener('pointerleave', () => show(-1));
+    new ResizeObserver(render).observe(host);
+    render();
+  })();
+
+  /* ---------- knowledge graph schema ---------- */
+  (function schema(){
+    const svg = document.getElementById('schema');
+    const W2 = 56, H2 = 21;
+    const N = {
+      Drug:{x:132, y:185, c:'--n-drug', n:'5'},
+      SideEffect:{x:132, y:52, c:'--n-patient'},
+      Disease:{x:392, y:52, c:'--n-disease', n:'756'},
+      Gene:{x:392, y:185, c:'--n-gene', n:'19,945'},
+      Protein:{x:652, y:108, c:'--n-protein'},
+      Variant:{x:652, y:262, c:'--n-gene', n:'2,686'},
+      Pathway:{x:220, y:306, c:'--n-pathway'},
+      Evidence:{x:472, y:318, c:'--ink-2'}
+    };
+    const E = [
+      ['Drug','Gene','TARGETS'], ['Gene','Disease','ASSOCIATED_WITH'], ['Drug','Disease','CONTRAINDICATED_FOR'],
+      ['Drug','SideEffect','HAS_SIDE_EFFECT'], ['Gene','Protein','ENCODES'], ['Gene','Variant','HAS_VARIANT / LOCATED_IN', true],
+      ['Gene','Pathway','PARTICIPATES_IN'], ['Gene','Evidence','SUPPORTED_BY'], ['Variant','Evidence','SUPPORTED_BY']
+    ];
+    const clip = (ax, ay, bx, by) => { const dx = ax - bx, dy = ay - by; const s = Math.min(W2 / Math.abs(dx || 1e-9), H2 / Math.abs(dy || 1e-9)); return [bx + dx * s, by + dy * s]; };
+    let out = `<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" style="fill:var(--ink-2)"/></marker></defs>`;
+    let labels = '';
+    E.forEach(([a, b, t, both]) => {
+      const A = N[a], B = N[b];
+      const [sx, sy] = clip(B.x, B.y, A.x, A.y), [ex, ey] = clip(A.x, A.y, B.x, B.y);
+      const L = Math.hypot(ex - sx, ey - sy), ux = (ex - sx) / L, uy = (ey - sy) / L;
+      out += `<path class="edge" d="M${sx + (both ? ux * 3 : 0)},${sy + (both ? uy * 3 : 0)} L${ex - ux * 3},${ey - uy * 3}" marker-end="url(#arr)"${both ? ' marker-start="url(#arr)"' : ''}/>`;
+      labels += `<text class="elbl" x="${(A.x + B.x) / 2}" y="${(A.y + B.y) / 2 + 3.5}">${t}</text>`;
+    });
+    const D = N.Drug, lx = D.x - W2;
+    out += `<path class="edge" d="M${lx},${D.y - 9} C${lx - 70},${D.y - 40} ${lx - 70},${D.y + 40} ${lx - 3},${D.y + 9}" marker-end="url(#arr)"/>`;
+    labels += `<text class="elbl" x="${lx - 22}" y="${D.y + 50}">INTERACTS_WITH</text>`;
+    Object.entries(N).forEach(([name, n]) => {
+      out += `<rect x="${n.x - W2}" y="${n.y - H2}" width="${W2 * 2}" height="${H2 * 2}" rx="9" style="fill:color-mix(in srgb, var(${n.c}) 13%, var(--sheet));stroke:var(${n.c});stroke-width:1.5"/>`;
+      if (n.n) out += `<text class="nname" x="${n.x}" y="${n.y - 2}">${name}</text><text class="ncount" x="${n.x}" y="${n.y + 12}">${n.n}</text>`;
+      else out += `<text class="nname" x="${n.x}" y="${n.y + 4.5}">${name}</text>`;
+    });
+    svg.innerHTML = out + labels;
+  })();
+
+  /* ---------- zsh-next demo ---------- */
+  (function zsh(){
+    const typed = document.getElementById('zs-typed'), ghost = document.getElementById('zs-ghost');
+    const demos = [['git commit -m "fix typo"', 'git push'], ['cd ~/my-ml-journey', 'jupyter lab'], ['docker compose build', 'docker compose up -d'], ['python train.py --fold 0', 'python train.py --fold 1']];
+    let i = 0, timer = null;
+    const wait = ms => new Promise(r => { timer = setTimeout(r, ms); });
+    async function run(){
+      while (true) {
+        await wait(3200);
+        if (reduceMQ.matches || document.hidden) continue;
+        i = (i + 1) % demos.length;
+        const [cmd, nxt] = demos[i];
+        ghost.style.visibility = 'hidden';
+        typed.textContent = '';
+        for (const ch of cmd) { typed.textContent += ch; await wait(38 + Math.random() * 40); }
+        await wait(160);
+        ghost.textContent = '  →  ' + nxt;
+        ghost.style.visibility = 'visible';
+      }
+    }
+    run();
+  })();
+})();
+</script>
+</body>
+</html>
